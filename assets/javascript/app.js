@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  let topics = ['dog', 'cat', 'rat', 'bat', 'mouse']
+  let topics = ['dog', 'wolf', 'cat', 'lion', 'duck']
   var placeholder = $(".placeholder")
   var userInput = $("#user-input")
   var submit = $("#submit")
@@ -27,57 +27,47 @@ $(document).ready(function() {
     renderButtons(topics, placeholder);
   });
   
-  $(document).on("click", ".topics-button", function(event) {
+  $(document).on("click", ".topics-button", function() {
     // api setup
     const querySearch = $(this).attr("data-name");
-    const api_url = 'https://api.giphy.com/v1/gifs/search' + '?api_key=' + api_key + '&q=' + querySearch + '&limit=0&offset=0&rating=&lang=en';
-
+    const api_url = 'https://api.giphy.com/v1/gifs/search' + '?api_key=' + api_key + '&q=' + querySearch + '&limit=10&offset=0&rating=&lang=en';
+    
     $.ajax({
       url: api_url,
       method: "GET",
       dataType:"JSON"
     }).then(response => {
-      // console.log(response.data); // ← PATHWAY array
+      console.log(response.data); // ← PATHWAY array
       const data = response.data;
+      // empty method has to be outside forloop for multiple gifs to show
+      gifLibrary.empty();
+
       for (let i = 0; i < data.length; i++) { // apply [i]
         const rating = data[i].rating;
         const title = data[i].title;
-        const image_url = data[i].images.fixed_height.url; // ← img url
-        
-        gifLibrary.empty();
+        const image_url = data[i].images.original_still.url; // ← img url
         
         gifLibrary.append(
           `
-          <h1>Title: ${title}</h1>
-          <h2> Rating: ${rating}</h2>
-          <img src="${image_url}" alt="BOOTY">
-          `  
+          <h1>Title: ${title}, <span>${rating}</span></h1>
+          <img src="${image_url}" class="gif-image" data-state="still">
+          `
         );
       }
     });
   });
+
+  // makes gifs still/start on-click
+  $(document).on('click', '.gif-image', function () {
+    let state = $(this).attr('data-state');
+  
+    if (state === "still") {
+      $(this).attr("data-state", "animate");
+      $(this).attr('src', $(this).attr('src').replace('/giphy_s', '/giphy'));
+    } else {
+      $(this).attr("data-state", "still");
+      $(this).attr('src', $(this).attr('src').replace('/giphy', '/giphy_s'));
+    }
+  });
 });
 // Bug - line 39-57: Works as in intended, up until no new gif is picked, shows same
-
-
-// EXAMPLE
-/* 
-  function renderButtons(query, element) {
-    placeholder.empty();
-    $.each(query, function (index, topic) { // forloop
-      var btn = $("<button>");
-      btn.text(query[index]);
-      btn.addClass("topics-button")
-      btn.attr("data-name", query[index]);
-      element.append(btn);
-    });
-  };
-  renderButtons(topics, placeholder);
-
- */
-
-       // create img elements
-      // var image = $('<img>');
-      // image.attr("src", image_url);
-
-      // gifLibrary.append(image); // placeholder
