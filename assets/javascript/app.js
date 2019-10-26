@@ -30,7 +30,7 @@ $(document).ready(function() {
   $(document).on("click", ".topics-button", function() {
     // api setup
     const querySearch = $(this).attr("data-name");
-    const api_url = 'https://api.giphy.com/v1/gifs/search' + '?api_key=' + api_key + '&q=' + querySearch + '&limit=10&offset=0&rating=&lang=en';
+    const api_url = 'https://api.giphy.com/v1/gifs/search' + '?api_key=' + "9W3IpIZHDN253pTxBoYKMwTUbgvFp3up" + '&q=' + querySearch + '&limit=10&offset=0&rating=&lang=en';
     
     $.ajax({
       url: api_url,
@@ -49,8 +49,10 @@ $(document).ready(function() {
         
         gifLibrary.append(
           `
-          <h1>Title: ${title}, <span>${rating}</span></h1>
-          <img src="${image_url}" class="gif-image" data-state="still">
+          <div class="gif-container">
+            <h1>Title: ${title}, <span>${rating}</span></h1>
+            <img src="${image_url}" class="gif-image" data-state="still">
+          </div>
           `
         );
       }
